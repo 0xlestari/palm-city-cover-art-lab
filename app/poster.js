@@ -322,7 +322,7 @@
 
   function applyPainterly(ctx, rect, amount) {
     if (!amount || amount <= 0) return;
-    amount = Math.max(0, Math.min(1, amount));
+    amount = Math.max(0, Math.min(1, amount > 1 ? amount / 100 : amount));
     var x = Math.max(0, Math.floor(rect.x)), y = Math.max(0, Math.floor(rect.y));
     var w = Math.min(Math.floor(rect.w), ctx.canvas.width - x);
     var h = Math.min(Math.floor(rect.h), ctx.canvas.height - y);
@@ -349,7 +349,7 @@
   /* ------------------------------------------------------------------ */
 
   function drawQuoteBar(ctx, cover, W, qbH) {
-    var g = GRADES[cover.grade];
+    var g = GRADES[cover.grade] || GRADES['electric-sunset'];
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, W, qbH);
     ctx.textBaseline = 'middle';
@@ -481,7 +481,7 @@
   /* 3-layer title. Returns { titleBaseline, subBaseline, subTop } so the
    * caller can verify the clearance above the tagline pill. */
   function drawTitle(ctx, cover, W, pillTop, minTitleTop) {
-    var g = GRADES[cover.grade];
+    var g = GRADES[cover.grade] || GRADES['electric-sunset'];
     var title = cover.title;
     var cx = W / 2;
     ctx.textAlign = 'center';
@@ -662,6 +662,15 @@
     var cover = getCover(coverId);
     var gradeId = opts.grade || cover.grade;
     var layoutId = opts.layout || cover.layout;
+    /* The studio UI sends short ids (sunset / diagonal) while this engine
+     * keys grades and layouts by their long names. Translate the short
+     * ids here so the studio preview draws exactly the same poster the
+     * export draws, instead of falling back to another layout or an
+     * unknown grade. */
+    var gradeAlias = { 'sunset': 'electric-sunset', 'neon': 'miami-neon', 'gold': 'tropic-gold', 'noir': 'midnight-noir' };
+    var layoutAlias = { 'diagonal': 'gta-diagonal', 'classic': 'box-art-classic', 'split': 'hero-split', 'grid': 'widescreen-grid' };
+    if (gradeAlias[gradeId]) gradeId = gradeAlias[gradeId];
+    if (layoutAlias[layoutId]) layoutId = layoutAlias[layoutId];
     var grade = GRADES[gradeId] || GRADES[cover.grade];
     var W = cover.width, H = cover.height;
     var renderCoverCfg = Object.assign({}, cover, { grade: gradeId, layout: layoutId });

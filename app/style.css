@@ -205,10 +205,10 @@ input, select { font-family: inherit; }
   box-shadow: 0 0 0 1px rgba(34, 211, 238, .35), 0 0 18px rgba(34, 211, 238, .35);
   pointer-events: none;
 }
+/* Zoom/pan readout lives in the controls bar under the canvas now, never
+ * overlaid on the poster — it used to sit on top of the tagline pill. */
 .pan-indicator {
-  position: absolute;
-  left: 50%; bottom: 26px;
-  transform: translateX(-50%);
+  margin-left: auto;
   background: rgba(5, 5, 12, .78);
   border: 1px solid var(--line);
   border-radius: 999px;
