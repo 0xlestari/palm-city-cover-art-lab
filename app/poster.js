@@ -489,8 +489,11 @@
     function titleFont(s) { return s + 'px Anton, "Arial Narrow", sans-serif'; }
     /* Fit the title to exactly 80% of the poster width (band 75-85%):
      * measure once at a probe size, then scale by the exact ratio, so the
-     * measured width lands in-band on every cover. */
-    var targetW = W * 0.80, minW = W * 0.75, maxW = W * 0.85;
+     * measured width lands in-band on every cover.
+     * v11 micro patch: the 16:9 PALM CITY title was a touch too big, so
+     * it alone fits to 75% (the band's lower end) — 4:5 / 1:1 stay at 80%. */
+    var targetFrac = cover.aspect === '16:9' ? 0.75 : 0.80;
+    var targetW = W * targetFrac, minW = W * 0.75, maxW = W * 0.85;
     var size = W * 0.21;
     ctx.font = titleFont(size);
     var w0 = ctx.measureText(title).width;
