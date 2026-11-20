@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PALM CITY — Cover Art Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" data-ready="false">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-palm">PALM</span> <span class="brand-city">CITY</span>
+      <span class="brand-sub">COVER ART LAB</span>
+    </div>
+    <nav class="steps" aria-label="How it works">
+      <span><b>1.</b> Drop Photos</span><span class="arrow">&rarr;</span>
+      <span><b>2.</b> Pick Style &amp; Title</span><span class="arrow">&rarr;</span>
+      <span><b>3.</b> Export PNG</span>
+    </nav>
+    <div class="top-actions">
+      <button id="btn-export-top" class="btn btn-gradient" type="button">Export PNG</button>
+      <button id="btn-export-all" class="btn btn-ghost" type="button">Export All 3 Sizes</button>
+    </div>
+  </header>
+
+  <main class="studio">
+    <!-- LEFT: photo tray -->
+    <aside class="panel panel-left" aria-label="Photos">
+      <h2 class="panel-title">Photos</h2>
+      <button id="btn-upload" class="btn btn-gradient btn-block" type="button">+ Upload Photos</button>
+      <input id="file-input" type="file" accept="image/*" multiple hidden>
+      <button id="btn-shuffle" class="btn btn-dark btn-block" type="button">Shuffle / Auto-Fill</button>
+      <p class="hint">Drag a thumbnail onto any poster panel &mdash; or drop image files anywhere on this tray.</p>
+      <div id="tray" class="tray" role="listbox" aria-label="Photo thumbnails"></div>
+      <p id="load-status" class="load-status">Loading photos&hellip;</p>
+    </aside>
+
+    <!-- CENTER: canvas stage -->
+    <section class="stage" aria-label="Cover preview">
+      <div class="stage-pill"><span id="stage-pill-label">HERO &middot; 100%</span></div>
+      <div id="canvas-wrap" class="canvas-wrap">
+        <canvas id="cover-canvas" width="1920" height="1080"></canvas>
+        <div id="selection-frame" class="selection-frame" aria-hidden="true"></div>
+        <div class="pan-indicator"><span id="pan-label">ZOOM 100% &middot; DRAG TO PAN</span></div>
+        <div id="canvas-loading" class="canvas-loading"><span>Loading photos&hellip;</span></div>
+      </div>
+      <div class="stage-controls">
+        <label class="ctl ctl-zoom">Zoom
+          <input id="zoom-range" type="range" min="50" max="200" value="100" step="5">
+          <span id="zoom-value">100%</span>
+        </label>
+        <label class="ctl">Location
+          <select id="location-select">
+            <option value="0">OCEAN DRIVE</option>
+            <option value="1">PALM BOULEVARD</option>
+            <option value="2">NEON STRIP</option>
+            <option value="3">MARINA BAY</option>
+            <option value="4">HIGHWAY 95</option>
+            <option value="5">DOWNTOWN</option>
+          </select>
+        </label>
+        <label class="ctl">Caption
+          <input id="caption-quick" type="text" placeholder="e.g. Midnight run" maxlength="60">
+        </label>
+        <label class="ctl ctl-check"><input id="chk-halftone" type="checkbox"> Comic Halftone</label>
+        <label class="ctl ctl-check"><input id="chk-speedlines" type="checkbox"> Speed Lines</label>
+        <button id="btn-reset-crop" class="btn btn-dark" type="button">Reset Crop</button>
+      </div>
+    </section>
+
+    <!-- RIGHT: controls -->
+    <aside class="panel panel-right" aria-label="Canvas controls">
+      <h2 class="panel-title">Canvas</h2>
+
+      <h3 class="group-title">Cover</h3>
+      <div id="cover-picker" class="cover-picker" role="radiogroup" aria-label="Cover">
+        <button class="cover-opt is-active" type="button" data-cover="palm-city" role="radio" aria-checked="true">
+          <span class="cover-ratio">16:9</span><span class="cover-name">PALM CITY</span><span class="cover-sub">Electric Sunset</span>
+        </button>
+        <button class="cover-opt" type="button" data-cover="coastal-run" role="radio" aria-checked="false">
+          <span class="cover-ratio">4:5</span><span class="cover-name">COASTAL RUN</span><span class="cover-sub">Miami Neon</span>
+        </button>
+        <button class="cover-opt" type="button" data-cover="tropic-noir" role="radio" aria-checked="false">
+          <span class="cover-ratio">1:1</span><span class="cover-name">TROPIC NOIR</span><span class="cover-sub">Tropic Gold</span>
+        </button>
+      </div>
+
+      <h3 class="group-title">Aspect Ratio</h3>
+      <div id="aspect-list" class="aspect-list" role="radiogroup" aria-label="Aspect ratio">
+        <button class="aspect-opt is-active" type="button" data-cover="palm-city" role="radio" aria-checked="true"><span class="aspect-ratio">16:9</span><span class="aspect-dim">(1920&times;1080)</span></button>
+        <button class="aspect-opt" type="button" data-cover="coastal-run" role="radio" aria-checked="false"><span class="aspect-ratio">4:5</span><span class="aspect-dim">(1080&times;1350)</span></button>
+        <button class="aspect-opt" type="button" data-cover="tropic-noir" role="radio" aria-checked="false"><span class="aspect-ratio">1:1</span><span class="aspect-dim">(1080&times;1080)</span></button>
+      </div>
+
+      <h3 class="group-title">Layout</h3>
+      <div id="layout-list" class="layout-list" role="radiogroup" aria-label="Layout">
+        <button class="layout-opt is-active" type="button" data-layout="diagonal" role="radio" aria-checked="true">
+          <span class="mini-layout mini-diagonal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <span>GTA Diagonal</span>
+        </button>
+        <button class="layout-opt" type="button" data-layout="classic" role="radio" aria-checked="false">
+          <span class="mini-layout mini-classic" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>Box Art Classic</span>
+        </button>
+        <button class="layout-opt" type="button" data-layout="split" role="radio" aria-checked="false">
+          <span class="mini-layout mini-split" aria-hidden="true"><i></i><i></i></span>
+          <span>Hero Split</span>
+        </button>
+        <button class="layout-opt" type="button" data-layout="grid" role="radio" aria-checked="false">
+          <span class="mini-layout mini-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span>Widescreen Grid</span>
+        </button>
+      </div>
+
+      <h3 class="group-title">Color Grade</h3>
+      <div id="grade-list" class="grade-list" role="radiogroup" aria-label="Color grade">
+        <button class="grade-opt is-active" type="button" data-grade="sunset" role="radio" aria-checked="true">
+          <span class="swatch swatch-sunset" aria-hidden="true"></span><span>Electric Sunset</span>
+        </button>
+        <button class="grade-opt" type="button" data-grade="neon" role="radio" aria-checked="false">
+          <span class="swatch swatch-neon" aria-hidden="true"></span><span>Miami Neon</span>
+        </button>
+        <button class="grade-opt" type="button" data-grade="gold" role="radio" aria-checked="false">
+          <span class="swatch swatch-gold" aria-hidden="true"></span><span>Tropic Gold</span>
+        </button>
+        <button class="grade-opt" type="button" data-grade="noir" role="radio" aria-checked="false">
+          <span class="swatch swatch-noir" aria-hidden="true"></span><span>Midnight Noir</span>
+        </button>
+      </div>
+
+      <h3 class="group-title">Style</h3>
+      <div class="slider-row">
+        <label for="painterly-range">Illustration Boost / Painterly</label>
+        <span id="painterly-value">35%</span>
+      </div>
+      <input id="painterly-range" type="range" min="0" max="100" value="35" step="1">
+      <div class="slider-row">
+        <label for="ink-range">Poster Ink</label>
+        <span id="ink-value">65%</span>
+      </div>
+      <input id="ink-range" type="range" min="0" max="100" value="65" step="1">
+
+      <h3 class="group-title">Title</h3>
+      <label class="field"><span>Title</span>
+        <input id="title-input" type="text" value="PALM CITY" maxlength="24">
+      </label>
+      <label class="field"><span>Subtitle</span>
+        <input id="subtitle-input" type="text" value="Midnight Heat" maxlength="32">
+      </label>
+      <label class="field"><span>Caption</span>
+        <input id="caption-input" type="text" placeholder="e.g. Midnight run" maxlength="60">
+      </label>
+
+      <button id="btn-export-side" class="btn btn-gradient btn-block btn-export" type="button">Export PNG</button>
+      <p id="export-status" class="export-status" role="status"></p>
+    </aside>
+  </main>
+</div>
+<script src="poster.js"></script>
+<script src="studio.js"></script>
+</body>
+</html>
