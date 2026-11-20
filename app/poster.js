@@ -615,7 +615,7 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#9a8fb0';
-    ctx.font = '600 ' + Math.round(Math.max(11, footerH * 0.15)) + 'px Arial, sans-serif';
+    ctx.font = '600 ' + Math.max(9, Math.round(W * 0.0085)) + 'px Arial, sans-serif';
     setLetterSpacing(ctx, 2);
     ctx.fillText(CREDITS, W / 2, footerTop + footerH * 0.86);
     setLetterSpacing(ctx, 0);
@@ -623,7 +623,7 @@
     var stampR = footerH * 0.42;
     var stampCx = W - stampR - W * 0.018;
     var stampCy = footerTop + footerH * 0.58;
-    var barW = Math.round(W * 0.055), barH = Math.round(footerH * 0.30);
+    var barW = Math.round(W * 0.055), barH = Math.round(footerH * 0.22);
     drawBarcode(ctx, stampCx - stampR - barW - W * 0.012, stampCy - barH / 2, barW, barH);
     drawStamp(ctx, stampCx, stampCy, stampR);
 
@@ -693,7 +693,7 @@
     var qbH = Math.max(28, Math.round(H * 0.038));
     var footerH = Math.round(H * cover.footerFrac);
     var footerTop = H - footerH;
-    var gap = Math.max(5, Math.round(W * 0.004));
+    var gap = Math.max(8, Math.round(W * 0.0075));
     var photoRect = { x: gap, y: qbH + gap, w: W - gap * 2, h: footerTop - qbH - gap * 2 };
 
     /* --- Photos --- */
